@@ -1,0 +1,77 @@
+{% extends "template.html" %}
+{% block body %}
+    <h1>Leaderboard</h1>
+    <div id="main_grid_div">
+        <div>
+            <form action="#" method="post" class="sort_form">
+                <input type="submit" name="btn_identifier" value="Sort">
+                <select name="st">
+                    <option value="edsc">Elo Descending</option>
+                    <option value="easc">Elo Ascending</option>
+                    <option value="udsc">Username Descending</option>
+                    <option value="uasc">Username Ascending</option>
+                </select>
+            </form>
+            <div id="leaderboard">
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Elo</th>
+                    </tr>
+                    {% for u in users %}
+                        <tr>
+                            <td>{{u.username}}</td>
+                            <td>{{u.elo}}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="sidebar">
+            <form action="#" method="post">
+                <input class="form_input form_button" type="submit" name="btn_identifier" value="Matchmaking">
+                <input class="form_input" type="text" name="un" value="{{opponent}}"/>
+                <select class="form_input" name="rs">
+                    <option value="Win">Win</option>
+                    <option value="Lose">Lose</option>
+                    <option value="Draw">Draw</option>
+                </select>
+                <input class="form_input form_button" type="submit" name="btn_identifier" value="Log">
+            </form>
+        </div>
+        <div>
+            <p>You are <b>{{user["name"]}}</b></p>
+            <a href="/logout">Log Out</a> {% if user["isadmin"] %}| <a href="/admin">Admin Dashboard</a>{% endif %}
+            <p>Username: <b>{{user["username"]}}</b></p>
+            <p>Elo: <b>{{user["elo"]}}</b></p>
+            <p>Previous Matches:</p>
+            <div id="previous_matches">
+                <ul>
+                    {% for m in matches %}
+                        <li class="match_item"><b>
+                            {{m.result}}
+                        {% if m.user1.username == user.username %}
+                        </b> vs {{m.user2.username}} ({{datetime.strptime(m.time[5:], "%d %b %Y %I:%M:%S %Z") + timedelta(hours=8)}})</li>
+                        {% else %}
+                        </b> vs {{m.user1.username}} ({{datetime.strptime(m.time[5:], "%d %b %Y %I:%M:%S %Z") + timedelta(hours=8)}})</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% if mr %}
+    <div id="match_request_border">
+    <div id="match_request">
+    <p>Match Request</p>
+        <form action="#" method="post">
+            Name: {{mr.user1.username}} | Elo: {{mr.user1.elo}} | Status: {{mr.result}} | Time: {{mr.request_time}}</li>
+            <p><input type="hidden" name="match_request_id" value="{{mr.id}}">
+            <input type="submit" name="btn_identifier" value="Accept" id="accept">
+            <input type="submit" name="btn_identifier" value="Reject" id="reject"></p>
+        </form>
+    </div>
+    </div>
+    </div>
+    {% endif %}
+{% endblock %}

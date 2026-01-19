@@ -1,0 +1,72 @@
+{% extends "template.html" %}
+{% block body %}
+    <h1>Admin Dashboard</h1>    
+    <p><a href="/logout">Log Out</a> | <a href="/leaderboard">Leaderboard</a></p>
+    <div id="main_grid_div">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Real Name</th>
+                    <th>Username</th>
+                    <th>Elo</th>
+                    <th>Ban</th>
+                    <th>Hide</th>
+                    <th>Inspect</th>
+                </tr>
+                {% for u in users %}
+                <tr>
+                    <form action="#" method="post">
+						<input type="hidden" name="target_id" value="{{u.id}}">
+                        <td>{{u.id}}</td>
+                        <td>{{u.name}}</td>
+                        <td>{{u.username}}</td>
+                        <td>{{u.elo}}</td>
+                        <td>{% if u.isbanned %} <input type="submit" name="btn_identifier" value="Unban">{% else %} <input type="submit" name="btn_identifier" value="Ban">{% endif %}</td>
+                        <td>{% if u.ishidden %} <input type="submit" name="btn_identifier" value="Unhide">{% else %} <input type="submit" name="btn_identifier" value="Hide">{% endif %}</td>
+                        <td><input type="submit" name="btn_identifier" value="Inspect"></td>
+                    </form>
+                </tr>
+                {% endfor %}
+            </table>
+        <div>
+            {% if i_user %}
+                <p>
+                    Inspecting {{i_user.user.username}} | Elo: {{i_user.user.elo}}
+                </p>
+                <p>
+                    {% if i_user.match_requests|length > 0 %}
+                    <b>Match Requests</b>
+                    <ul>
+                        {% for mr in i_user.match_requests %}
+                        <li class="match_item">
+                            <form action="#" method="post">
+                                Match: {{mr.user1.username}} ({{mr.user1.elo}}) vs {{mr.user2.username}} ({{mr.user2.elo}}) | Status: {{mr.result}} | Time: {{mr.request_time}}
+                                <input type="hidden" name="match_request_id" value="{{mr.id}}">
+                                <input type="submit" name="btn_identifier" value="Accept">
+                                <input type="submit" name="btn_identifier" value="Reject">
+                            </form>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </p>
+                <p>
+                    {% if i_user.matches|length > 0 %}
+                    <b>Previous Matches</b>
+                    <ul>
+                        {% for m in i_user.matches %}
+                        <li class="match_item"><b>
+                            {{m.result}}
+                        {% if m.user1.username == i_user.user.username %}
+                        </b> vs {{m.user2.username}} ({{datetime.strptime(m.time[5:], "%d %b %Y %I:%M:%S %Z") + timedelta(hours=8)}})</li>
+                        {% else %}
+                        </b> vs {{m.user1.username}} ({{datetime.strptime(m.time[5:], "%d %b %Y %I:%M:%S %Z") + timedelta(hours=8)}})</li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

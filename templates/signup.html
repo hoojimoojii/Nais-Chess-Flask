@@ -1,0 +1,18 @@
+{% extends "template.html" %}
+{% block body %}
+    <form action="#" method="post">
+        <p>Real Name:</p>
+        <p><input type="text" name="rn"/></p>
+        <p>User Name:</p>
+        <p><input type="text" name="un"/></p>
+        <p>Password:</p>
+        <p><input type="password" name="pw"/></p>
+        <p>Re-enter Password:</p>
+        <p><input type="password" name="pwr"/></p>
+        <p><input type="submit" value="submit"/></p>
+    </form>
+    {% if error %}
+    <p>{{error}}</p>
+    {% endif %}
+    <p><a href="/login">Already have an account?</a></p>
+{% endblock %}

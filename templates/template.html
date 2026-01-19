@@ -1,0 +1,20 @@
+<!doctype html>
+<head>
+<title>NAIS CHESS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='stylesheets/style.css') }}"/>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="flashes">
+      <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  {% endwith %}
+</head>
+<body>
+{% block body %}{% endblock %}
+</body>
