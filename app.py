@@ -152,7 +152,7 @@ def leaderboard():
                         flag = True
                 i += 1
         
-        # Request the api for all match requests data related to the user
+        # Request the api for the latest match request data related to the user
         r = requests.get(API_URL + "/get_match_request", json=credentials)
         if(not r.ok):
             d = json.loads(r.text)
@@ -162,6 +162,7 @@ def leaderboard():
 
         # Save all match requests data related to the user 
         mr = json.loads(r.text).get("match_request", None)
+        
         # Request the api for all matches data related to the user 
         r = requests.get(API_URL + "/get_matches", json=credentials)
         if(not r.ok):
@@ -175,7 +176,7 @@ def leaderboard():
         # Find if there is a matchmaking opponent
         opponent = request.args.get("opp", default="")
         # Pass the variables and render it on a html template
-        return render_template("leaderboard.html", users=users, mr=mr, matches=matches, user=user, opponent=opponent, datetime=datetime, timedelta=timedelta)
+        return render_template("leaderboard.html", users=users, mr=mr, matches=matches, user=user, opponent=opponent, sort=sort_type, datetime=datetime, timedelta=timedelta)
     
 
 @app.route("/login/", methods=["POST", "GET"])
@@ -325,7 +326,7 @@ def admin():
         # Save the user data as a python variable
         user = json.loads(r.text)
         # Check if the user has the permission to access the admin dashboard
-        if (not user["isadmin"]):
+        if (not user["isadmin"]) and (not user["ismanager"]):
             return render_template("admin_blocked.html")
         # Request the api for all users data
         r = requests.get(API_URL + "/a_users", json=credentials)

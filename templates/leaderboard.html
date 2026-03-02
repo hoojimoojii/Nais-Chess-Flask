@@ -6,10 +6,27 @@
             <form action="#" method="post" class="sort_form">
                 <input type="submit" name="btn_identifier" value="Sort">
                 <select name="st">
-                    <option value="edsc">Elo Descending</option>
-                    <option value="easc">Elo Ascending</option>
-                    <option value="udsc">Username Descending</option>
-                    <option value="uasc">Username Ascending</option>
+                    {% if sort == "easc" %}
+                        <option value="easc">Elo Ascending</option>
+                        <option value="edsc">Elo Descending</option>
+                        <option value="udsc">Username Descending</option>
+                        <option value="uasc">Username Ascending</option>
+                    {% elif sort == "udsc" %}
+                        <option value="udsc">Username Descending</option>
+                        <option value="edsc">Elo Descending</option>
+                        <option value="easc">Elo Ascending</option>
+                        <option value="uasc">Username Ascending</option>
+                    {% elif sort == "uasc" %}
+                        <option value="uasc">Username Ascending</option>
+                        <option value="edsc">Elo Descending</option>
+                        <option value="easc">Elo Ascending</option>
+                        <option value="udsc">Username Descending</option>
+                    {% else %}
+                        <option value="edsc">Elo Descending</option>
+                        <option value="easc">Elo Ascending</option>
+                        <option value="udsc">Username Descending</option>
+                        <option value="uasc">Username Ascending</option>
+                    {% endif %}
                 </select>
             </form>
             <div id="leaderboard">
@@ -41,7 +58,7 @@
         </div>
         <div>
             <p>You are <b>{{user["name"]}}</b></p>
-            <a href="/logout">Log Out</a> {% if user["isadmin"] %}| <a href="/admin">Admin Dashboard</a>{% endif %}
+            <a href="/logout">Log Out</a> {% if (user["isadmin"]) or (user["ismanager"]) %}| <a href="/admin">Admin Dashboard</a>{% endif %}
             <p>Username: <b>{{user["username"]}}</b></p>
             <p>Elo: <b>{{user["elo"]}}</b></p>
             <p>Previous Matches:</p>
@@ -51,9 +68,9 @@
                         <li class="match_item"><b>
                             {{m.result}}
                         {% if m.user1.username == user.username %}
-                        </b> vs {{m.user2.username}} ({{datetime.strptime(m.time[5:], "%d %b %Y %I:%M:%S %Z") + timedelta(hours=8)}})</li>
+                        </b> vs {{m.user2.username}} ({{datetime.strptime(m.time[5:], "%d %b %Y %H:%M:%S %Z") + timedelta(hours=8)}})</li>
                         {% else %}
-                        </b> vs {{m.user1.username}} ({{datetime.strptime(m.time[5:], "%d %b %Y %I:%M:%S %Z") + timedelta(hours=8)}})</li>
+                        </b> vs {{m.user1.username}} ({{datetime.strptime(m.time[5:], "%d %b %Y %H:%M:%S %Z") + timedelta(hours=8)}})</li>
                         {% endif %}
                     {% endfor %}
                 </ul>
@@ -63,9 +80,9 @@
     {% if mr %}
     <div id="match_request_border">
     <div id="match_request">
-    <p>Match Request</p>
+    <p>Match Confirmation</p>
         <form action="#" method="post">
-            Name: {{mr.user1.username}} | Elo: {{mr.user1.elo}} | Status: {{mr.result}} | Time: {{mr.request_time}}</li>
+            Name: {{mr.user1.username}} | Elo: {{mr.user1.elo}} | Status: {{mr.result}} | Time: {{datetime.strptime(mr.request_time[5:], "%d %b %Y %H:%M:%S %Z") + timedelta(hours=8)}}</li>
             <p><input type="hidden" name="match_request_id" value="{{mr.id}}">
             <input type="submit" name="btn_identifier" value="Accept" id="accept">
             <input type="submit" name="btn_identifier" value="Reject" id="reject"></p>
