@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, url_for, render_template, make_response, request, session
+from flask import Flask, flash, redirect, url_for, render_template, request, session
 import requests, json
 from datetime import datetime, timedelta
 
